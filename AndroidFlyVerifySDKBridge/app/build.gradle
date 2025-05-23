@@ -1,0 +1,42 @@
+apply plugin: 'com.android.library'
+apply plugin: 'cn.fly.sdk'
+FlySDK{
+    FlyVerify{}
+}
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compileOnly  fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.+'
+}
+
+task makeJar(type: Jar) {
+    //删除存在的
+    delete 'build/libs/FlyVerifySDKUnityBridge.jar'
+    //设置拷贝的文件
+    from('build/intermediates/javac/release/classes')
+    include "**/*.class"
+    exclude "**/BuildConfig.class"
+    //打进jar包后的文件目录
+    into('build/libs/')
+    extension "jar"
+    archiveFileName = "FlyVerifySDKUnityBridge.jar"
+}
+makeJar.dependsOn(build)
